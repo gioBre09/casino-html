@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Royale</title>
+    <style>
+        /* Generale */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #fff;
+            background: #fddb3a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ffc107;
+        }
+
+        #menu, #slot-machine, #blackjack {
+            display: none;
+        }
+
+        /* Menu iniziale */
+        #menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Slot Machine */
+        #slot-machine {
+            text-align: center;
+        }
+
+        #slot-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 30px auto;
+        }
+
+        .reel {
+            width: 100px;
+            height: 100px;
+            border: 5px solid #fddb3a;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #444;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .icons {
+            display: flex;
+            flex-direction: column;
+            transform: translateY(0);
+            transition: transform 1s ease-out;
+        }
+
+        .icon {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+        }
+
+        .icon:nth-child(1) { background: #ff6f61; color: #fff; }
+        .icon:nth-child(2) { background: #fddb3a; color: #000; }
+        .icon:nth-child(3) { background: #4facfe; color: #fff; }
+        .icon:nth-child(4) { background: #6a0572; color: #fff; }
+        .icon:nth-child(5) { background: #38ef7d; color: #000; }
+
+        #lever {
+            width: 20px;
+            height: 120px;
+            background: #fff;
+            border: 3px solid #fddb3a;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 0 auto;
+            transform-origin: top center;
+            transform: rotate(0deg);
+            transition: transform 0.3s;
+        }
+
+        #lever:active {
+            transform: rotate(40deg);
+        }
+
+        #slot-message {
+            margin-top: 20px;
+            font-size: 1.5em;
+            min-height: 30px;
+        }
+
+        /* Blackjack */
+        #blackjack {
+            text-align: center;
+        }
+
+        #blackjack-controls {
+            margin-top: 20px;
+        }
+
+        .card {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 15px;
+            background: #fddb3a;
+            color: #000;
+            border-radius: 5px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        #blackjack-message {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        /* Portafoglio */
+        #wallet {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2em;
+            background: #fddb3a;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Portafoglio -->
+    <div id="wallet">💰 Saldo: <span id="balance">10</span> monete</div>
+
+    <!-- Menu -->
+    <div id="menu">
+        <h1>🎰 Casino Royale 🎲</h1>
+        <button id="slot-btn">Gioca alla Slot Machine</button>
+        <button id="blackjack-btn">Gioca a Blackjack</button>
+    </div>
+
+    <!-- Slot Machine -->
+    <div id="slot-machine">
+        <h2>🎰 Slot Machine 🎰</h2>
+        <div id="slot-container">
+            <div class="reel">
+                <div class="icons">
+                    <div class="icon">🍒</div>
+                    <div class="icon">🍋</div>
+                    <div class="icon">🍇</div>
+                    <div class="icon">⭐</div>
+                    <div class="icon">🍉</div>
+                </div>
+            </div>
+            <div class="reel">
+                <div class="icons">
+                    <div class="icon">🍒</div>
+                    <div class="icon">🍋</div>
+                    <div class="icon">🍇</div>
+                    <div class="icon">⭐</div>
+                    <div class="icon">🍉</div>
+                </div>
+            </div>
+            <div class="reel">
+                <div class="icons">
+                    <div class="icon">🍒</div>
+                    <div class="icon">🍋</div>
+                    <div class="icon">🍇</div>
+                    <div class="icon">⭐</div>
+                    <div class="icon">🍉</div>
+                </div>
+            </div>
+        </div>
+        <div id="lever"></div>
+        <div id="slot-message"></div>
+        <button onclick="returnToMenu()">Torna al menu</button>
+    </div>
+
+    <!-- Blackjack -->
+    <div id="blackjack">
+        <h2>🃏 Blackjack 🃏</h2>
+        <div id="blackjack-cards"></div>
+        <div id="blackjack-controls">
+            <button onclick="drawCard()">Pesca una carta</button>
+            <button onclick="endGame()">Stop</button>
+        </div>
+        <div id="blackjack-message"></div>
+        <button onclick="returnToMenu()">Torna al menu</button>
+    </div>
+
+    <script>
+        let balance = 10;
+
+        function updateBalance(amount) {
+            balance += amount;
+            document.getElementById("balance").textContent = balance;
+        }
+
+        function returnToMenu() {
+            document.getElementById("slot-machine").style.display = "none";
+            document.getElementById("blackjack").style.display = "none";
+            document.getElementById("menu").style.display = "flex";
+        }
+
+        document.getElementById("slot-btn").onclick = () => {
+            document.getElementById("menu").style.display = "none";
+            document.getElementById("slot-machine").style.display = "block";
+        };
+
+        document.getElementById("blackjack-btn").onclick = () => {
+            document.getElementById("menu").style.display = "none";
+            document.getElementById("blackjack").style.display = "block";
+            startBlackjack();
+        };
+
+        // SLOT MACHINE
+        const lever = document.getElementById("lever");
+        const slotMessage = document.getElementById("slot-message");
+        const reels = document.querySelectorAll(".reel .icons");
+
+        lever.addEventListener("mousedown", () => {
+            slotMessage.textContent = "Spinning... 🎲";
+            spinReels();
+        });
+
+        function spinReels() {
+            let results = [];
+            reels.forEach(reel => {
+                const randomPosition = Math.floor(Math.random() * 5) * -100;
+                reel.style.transform = `translateY(${randomPosition}px)`;
+                results.push(randomPosition);
+            });
+
+            setTimeout(() => {
+                const indexes = results.map(pos => Math.abs(pos) / 100);
+                if (indexes[0] === indexes[1] && indexes[1] === indexes[2]) {
+                    slotMessage.textContent = "🎉 JACKPOT! Hai vinto!";
+                    updateBalance(1);
+                } else {
+                    slotMessage.textContent = "😢 Riprova!";
+                }
+            }, 1000);
+        }
+
+        // BLACKJACK
+        let blackjackTotal = 0;
+
+        function startBlackjack() {
+            blackjackTotal = 0;
+            document.getElementById("blackjack-cards").innerHTML = "";
+            document.getElementById("blackjack-message").textContent = "";
+        }
+
+        function drawCard() {
+            const card = Math.floor(Math.random() * 11) + 1; // 1-11
+            blackjackTotal += card;
+            const cardElement = document.createElement("div");
+            cardElement.className = "card";
+            cardElement.textContent = card;
+            document.getElementById("blackjack-cards").appendChild(cardElement);
+
+            if (blackjackTotal > 21) {
+                document.getElementById("blackjack-message").textContent = "😢 Hai perso! Totale: " + blackjackTotal;
+                updateBalance(-1);
+            }
+        }
+
+        function endGame() {
+            if (blackjackTotal <= 21) {
+                document.getElementById("blackjack-message").textContent = "🎉 Hai vinto! Totale: " + blackjackTotal;
+                updateBalance(1);
+            }
+        }
+    </script>
+</body>
+</html>
